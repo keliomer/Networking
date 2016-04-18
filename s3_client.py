@@ -22,15 +22,18 @@
 # 
 
 import sys
+import csv
 import requests
 import requests_aws4auth
 import xml.etree.ElementTree as ET
 import xml.dom.minidom as minidom
 import mimetypes
 
-
-access_id = 'AKIAIV3LYIJRQCRMJ7FQ'
-access_key = 'i0OxXcGBgARk0dcpKsgY5EU8aevqKgcl0z2yK0p3'
+with open('./credentials.csv', 'r') as csvfile:
+    reader = csv.DictReader(csvfile)
+    for row in reader:
+        access_id = row['Access Key Id']
+        access_key = row['Secret Access Key']
 region = 'us-east-1'
 if region and region != 'us-east-1':
     endpoint = 's3-{}.amazonaws.com'.format(region)
