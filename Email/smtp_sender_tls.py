@@ -23,6 +23,9 @@
 #  
 import smtplib
 import getpass
+import os
+import re
+import sys
 
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
@@ -42,6 +45,16 @@ def send_email(sender, recipient):
     part = MIMEText('text', "plain")
     part.set_payload(message)
     msg.attach(part)
+    
+    #attach image
+    filename = input("Enter the file nameof a GIF: ")
+    path = os.path.join(os.getcwd(), filename)
+    if os.path.exists(path):
+        img = MIMEImage(open(path, 'rb').read(), _subtype="gif")
+        img.add_header('Content-Disposition', 'attachment',
+                    filename=filename)
+        msg.attach(img)
+        
     # create smtp session
     session = smtplib.SMTP(SMTP_SERVER, SMTP_PORT, timeout = 120)
     session.set_debuglevel(1)
