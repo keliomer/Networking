@@ -34,7 +34,7 @@ with open('./credentials.csv', 'r') as csvfile:
     for row in reader:
         access_id = row['Access Key Id']
         access_key = row['Secret Access Key']
-region = 'us-east-1'
+region = 'eu-west-1'
 if region and region != 'us-east-1':
     endpoint = 's3-{}.amazonaws.com'.format(region)
 else:
@@ -61,7 +61,7 @@ def create_bucket(bucket):
     if r.ok:
         print('Created bucket {} OK'.format(bucket))
     else:
-        xml_pprint(r.text)
+        handle_error(r)
         
 def upload_file(bucket,s3_name,local_path, acl='private'):
     data = open(local_path, 'rb').read()
@@ -74,7 +74,7 @@ def upload_file(bucket,s3_name,local_path, acl='private'):
     if r.ok:
         print('Uploaded {} OK'.format(local_path))
     else:
-            xml_pprint(r.text)
+            handle_error(r)
             
 def download_file(bucket, s3_name, local_path):
     url = 'http://{}.{}/{}'.format(bucket,endpoint,s3_name)
@@ -83,7 +83,16 @@ def download_file(bucket, s3_name, local_path):
         open(local_path,'wb').write(r.content)
         print('Downloaded {} OK'.format(s3_name))
     else:
-        xml_pprint(r.text)
+        handle_error(r)
+
+def handle_error(response):
+    output = 'Status code: {}\n'.format(response.status_code)
+    root = ET.fromstring(response.text)
+    code = root.find('Code').text
+    output += 'Error code: {}\n'.format(code)
+    message = root.find('Message').text
+    output += 'Message: {}\n'.format(message)
+    print(output)
         
         
 if __name__ == '__main__':
