@@ -43,6 +43,7 @@ auth = requests_aws4auth.AWS4Auth(access_id, access_key, region, 's3')
 ns = 'http://s3.amazonaws.com/doc/2006-03-01/'
 
 def xml_pprint(xml_string):
+    '''pretty prints XML!'''
     print(minidom.parseString(xml_string).toprettyxml())
     
 def create_bucket(bucket):
